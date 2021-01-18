@@ -4,7 +4,7 @@
   "description": "An Ethereum Marketplace",
   "author": "#",
   "dependencies": {
-    "@maticnetwork/maticjs": "^2.0.2",
+    "@maticnetwork/maticjs": "^2.0.22",
     "@maticnetwork/meta": "^2.4.0",
     "@maticnetwork/metamask-provider": "0.0.1",
     "@truffle/hdwallet-provider": "^1.0.42",

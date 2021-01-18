@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
 import MetamaskProvider from "@maticnetwork/metamask-provider";
-
-
 import Matic from "@maticnetwork/maticjs";
 const bn = require("bn.js");
 const Network = require("@maticnetwork/meta/network");
 const SCALING_FACTOR = new bn(10).pow(new bn(18));
-
-
 //const token = "0xfA08B72137eF907dEB3F202a60EfBc610D2f224b" // ERC721 token address
 //const tokenId = '100' // ERC721 token ID
-const from = "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9"
+const from = "0x720E1fa107A1Df39Db4E78A3633121ac36Bec132";
 
 class App extends Component {
 
@@ -46,24 +42,26 @@ async loadBlockchainData() {
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
     
+    console.log(accounts[0]);
 
     const ethBalance = await web3.eth.getBalance(this.state.account)
     this.setState({ ethBalance })
     console.log(ethBalance);
 
-    // Load Token
-    //const networkId =  await web3.eth.net.getId()
+
+    const networkId =  await web3.eth.net.getId();
+    console.log(networkId);
 
   }
   
 async getMaticClient(_network = "testnet", _version = "mumbai") {
  
   
-console.log({
+console.log({ 
   network: _network,
   version: _version,
   parentProvider:new MetamaskProvider(window.ethereum, {
-      url:"https://goerli.infura.io/v3/8759fde372ab4411871ce0005109ee20"
+      url:"https://goerli.infura.io/v3/72a742010b8c4a2ba7f0398c65bdeb63"
     }),
   maticProvider:new MetamaskProvider(window.ethereum, {
       url:"https://rpc-mumbai.matic.today"
@@ -79,7 +77,7 @@ console.log({
     //parentProvider: "https://goerli.infura.io/v3/8759fde372ab4411871ce0005109ee20" ,
     //maticProvider: window.ethereumm ,
     parentProvider:new MetamaskProvider(window.ethereum, {
-        url:"https://goerli.infura.io/v3/8759fde372ab4411871ce0005109ee20"
+        url:"https://goerli.infura.io/v3/72a742010b8c4a2ba7f0398c65bdeb63"
       }),
     maticProvider:new MetamaskProvider(window.ethereum, {
         url:"https://rpc-mumbai.matic.today"
@@ -93,17 +91,17 @@ console.log({
   }
 
 
-async execute() {
-    
+async burned() {
+
     const { matic, network } = await this.getMaticClient();
     console.log(matic);
     console.log(network);
     // burning erc721 tokens are also supported
-    const token = network.Matic.Contracts.Tokens.RootERC721;
+    const token = "0x21C5111620aEd2Fe7885c96C4b72fBf89095A085";
     console.log(token);
   
     // or provide the tokenId in case of an erc721
-    const tokenId = "60508561";
+    const tokenId = "7228";
     const hash = await matic.startWithdrawForNFT(token, tokenId, { from });
     await this.setState({
        hash:hash.transactionHash
@@ -114,7 +112,7 @@ async execute() {
     
   }
 
-async execute1() {
+async withdrawn() {
   const hash1 = localStorage.getItem('hash');
   console.log(hash1);  
   const { matic, network } = await this.getMaticClient();
@@ -129,7 +127,7 @@ async execute1() {
 
   // Withdraw process is completed, funds will be transfered to your account after challege period is over.
 
-async execute2() {
+async exit() {
     const { matic, network } = await this.getMaticClient();
     
     const token = network.Main.Contracts.Tokens.RootERC721;
@@ -138,11 +136,12 @@ async execute2() {
    localStorage.setItem('phash',phash.transactionHash);
   }
   
-  async execute3() {
+  async deposited() {
     const { matic, network } = await this.getMaticClient();
   
     const token = network.Main.Contracts.Tokens.RootERC721;
-    const tokenId = "258";
+    console.log(token);
+    const tokenId = "245";
   
     
     await matic.approveERC20TokensForDeposit(token, tokenId).then((res) => {
@@ -159,16 +158,16 @@ async execute2() {
 render() {
     return (
       <div>
-      <button onClick={() => this.execute()}>Burn</button><br></br>
+      <button onClick={() => this.burned()}>Burn</button><br></br>
       <h1>{this.state.hash}</h1>
       <a href={`https://mumbai-explorer.matic.today/tx/${localStorage.getItem('hash')}/token_transfers`} target="_blank">Hash</a><br></br>
-      <button onClick={() => this.execute1()}>Confirm Withdraw</button><br></br>
+      <button onClick={() => this.withdrawn()}>Confirm Withdraw</button><br></br>
       <a href={`https://goerli.etherscan.io/tx/${localStorage.getItem('chash')}`} target="_blank">Hash</a><br></br>
       
-      <button onClick={() => this.execute2()}>Process Exit</button><br></br>
+      <button onClick={() => this.exit()}>Process Exit</button><br></br>
       <a href={`https://goerli.etherscan.io/tx/${localStorage.getItem('phash')}`} target="_blank">Hash</a><br></br>
       
-      <button onClick={() => this.execute3()}>Deposit</button><br></br>
+      <button onClick={() => this.deposited()}>Deposit</button><br></br>
       <a href={`https://goerli.etherscan.io/tx/${localStorage.getItem('dhash')}`}  target="_blank">Hash</a><br></br>
       
       </div>
